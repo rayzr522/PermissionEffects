@@ -12,7 +12,7 @@ public class MessageHandler {
     private Hashtable<String, String> messages = new Hashtable<>();
 
     private static String getBaseKey(String key) {
-        return key.substring(0, key.lastIndexOf('.'));
+        return key.indexOf('.') > -1 ? key.substring(0, key.lastIndexOf('.')) : "";
     }
 
     public void load(ConfigurationSection config) {

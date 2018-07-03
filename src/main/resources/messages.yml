@@ -1,9 +1,12 @@
 prefix: "&8\u00bb&6 "
-no-permission: "&cYou need the permission '{0}' to do that!"
+no-permission: "&cYou need the permission '%s' to do that!"
 
 command:
-  fail:
-    prefix-addon: "&c"
-    only-players: "&cOnly players can use this command!"
-    no-player: "&cThe player '{0}' does not exist!"
-    not-number: "&c'{0}' is not a valid number!"
+  version: "You are running v&c%s&6 of &cPermissionEffects&6."
+  reloaded: "Config reloaded."
+  types: "Available potion effect types: &c%s"
+  help: |
+    &c/permissioneffects version &8-&6 Shows the current version.
+    &c/permissioneffects reload &8-&6 Reloads the config.
+    &c/permissioneffects types &8-&6 Lists all available potion effect types.
+    &c/permissioneffects help &8-&6 Shows this help message.

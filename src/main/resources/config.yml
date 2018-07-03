@@ -1,0 +1,12 @@
+global:
+  # 40 ticks = 2 seconds = players will be checked every 2 seconds
+  # lower values can mean more lag, but they also mean more precise checking of permissions
+  timer-delay: 40
+  # ignore /op players
+  # this is so players with /op don't suddenly receive 9000 random potion effects.
+  ignore-op: true
+
+effects:
+  speed:
+    type: speed
+

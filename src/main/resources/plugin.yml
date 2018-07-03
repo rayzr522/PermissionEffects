@@ -1,10 +1,10 @@
 main: me.rayzr522.permissioneffects.PermissionEffects
 name: PermissionEffects
-version: 1.0.0
-description: Give players potion effects based on their permissions.
+version: ${project.version}
+description: ${project.description}
 author: Rayzr
-#commands:
-#  permissioneffects:
-#    description: The main command for PermissionEffects
-#    aliases: [alias1,alias2]
-#    usage: "\u00A7cRayzr fracked something up."
+commands:
+  permissioneffects:
+    description: The main command for PermissionEffects
+    aliases: [pe]
+    usage: "\u00A7cRayzr screwed up."

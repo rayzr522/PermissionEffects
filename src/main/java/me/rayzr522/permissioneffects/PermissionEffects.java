@@ -1,35 +1,31 @@
 package me.rayzr522.permissioneffects;
 
+import me.rayzr522.permissioneffects.command.CommandHandler;
+import me.rayzr522.permissioneffects.data.EffectManager;
 import me.rayzr522.permissioneffects.utils.MessageHandler;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
 
 /**
  * @author Rayzr
  */
 public class PermissionEffects extends JavaPlugin {
-    private static PermissionEffects instance;
     private MessageHandler messages = new MessageHandler();
+    private EffectManager effectManager = new EffectManager(this);
+    private int timerDelay;
+    private boolean ignoreOp;
 
-    public static PermissionEffects getInstance() {
-        return instance;
-    }
+    private BukkitRunnable effectTask = null;
 
     @Override
     public void onEnable() {
-        instance = this;
+        getCommand("permissioneffects").setExecutor(new CommandHandler(this));
 
         reload();
-    }
-
-    @Override
-    public void onDisable() {
-        instance = null;
     }
 
     /**
@@ -40,6 +36,25 @@ public class PermissionEffects extends JavaPlugin {
         reloadConfig();
 
         messages.load(getConfig("messages.yml"));
+        timerDelay = getConfig().getInt("global.timer-delay", 40);
+        ignoreOp = getConfig().getBoolean("global.ignore-op", true);
+        effectManager.load(getConfig().getConfigurationSection("effects"));
+
+        startEffectTask();
+    }
+
+    private void startEffectTask() {
+        if (effectTask != null) {
+            effectTask.cancel();
+        }
+
+        effectTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                effectManager.applyAll();
+            }
+        };
+        effectTask.runTaskTimer(this, timerDelay, timerDelay);
     }
 
     /**
@@ -48,32 +63,19 @@ public class PermissionEffects extends JavaPlugin {
      * @param path The path to the config file (relative to the plugin data folder)
      * @return The {@link YamlConfiguration}
      */
-    public YamlConfiguration getConfig(String path) {
+    private YamlConfiguration getConfig(String path) {
         if (!getFile(path).exists() && getResource(path) != null) {
             saveResource(path, true);
         }
         return YamlConfiguration.loadConfiguration(getFile(path));
     }
 
-    /**
-     * Attempts to save a {@link YamlConfiguration} to the disk, and any {@link IOException}s are printed to the console
-     *
-     * @param config The config to save
-     * @param path   The path to save the config file to (relative to the plugin data folder)
-     */
-    public void saveConfig(YamlConfiguration config, String path) {
-        try {
-            config.save(getFile(path));
-        } catch (IOException e) {
-            getLogger().log(Level.SEVERE, "Failed to save config", e);
-        }
-    }
 
     /**
      * @param path The path of the file (relative to the plugin data folder)
      * @return The {@link File}
      */
-    public File getFile(String path) {
+    private File getFile(String path) {
         return new File(getDataFolder(), path.replace('/', File.separatorChar));
     }
 
@@ -127,11 +129,11 @@ public class PermissionEffects extends JavaPlugin {
         return true;
     }
 
-    /**
-     * @return The {@link MessageHandler} instance for this plugin
-     */
-    public MessageHandler getMessages() {
-        return messages;
+    public int getTimerDelay() {
+        return timerDelay;
     }
 
+    public boolean shouldIgnoreOp() {
+        return ignoreOp;
+    }
 }
